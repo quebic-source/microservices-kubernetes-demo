@@ -1,0 +1,15 @@
+spring:
+  cloud:
+    kubernetes:
+      config:
+        name: common-config
+        namespace: default # Sets the Kubernetes namespace where to lookup
+      reload:
+        enabled: true
+        monitoring-config-maps: true
+        monitoring-secrets: true
+        mode: refresh
+        period: 10s
+  sleuth:
+    sampler:
+      probability: 1.0

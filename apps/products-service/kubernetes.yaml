@@ -1,0 +1,53 @@
+###########
+# Service #
+###########
+apiVersion: v1
+kind: Service
+metadata:
+  name: products-service
+  labels:
+    app: products-service
+    service: products-service
+spec: 
+  type: NodePort
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: products-service
+---
+
+##############
+# Deployment #
+##############
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: products-service
+  labels:
+    app: products-service
+    version: v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: products-service
+        version: v1
+    spec:
+      containers:
+      - name: products-service
+        image: quebicdocker/ms-demo-products-service:0.1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: spring_profiles_active
+          value: "prod"
+        - name: VERSION
+          value: "v1"
+        - name: REVIEWS_SVC_HOST
+          value: "reviews-service"
+        - name: REVIEWS_SVC_PORT
+          value: "8080"
+---

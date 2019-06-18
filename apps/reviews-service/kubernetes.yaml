@@ -1,0 +1,49 @@
+###########
+# Service #
+###########
+apiVersion: v1
+kind: Service
+metadata:
+  name: reviews-service
+  labels:
+    app: reviews-service
+    service: reviews-service
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: reviews-service
+---
+
+##############
+# Deployment #
+##############
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: reviews-service
+  labels:
+    app: reviews-service
+    version: v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reviews-service
+        version: v1
+    spec:
+      containers:
+      - name: reviews-service
+        image: quebicdocker/ms-demo-reviews-service:0.1.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: spring_profiles_active
+          value: "prod"
+        - name: VERSION
+          value: "v1"
+---

@@ -1,0 +1,19 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: common-config
+data:
+  application.yaml: |-
+    spring:
+      profiles: prod # profile
+    app:
+      message: running on prod mode
+      pool:
+        size: 100
+    ---
+    spring:
+      profiles: qa # profile
+    app:
+      message: running on qa mode
+      pool:
+        size: 100
