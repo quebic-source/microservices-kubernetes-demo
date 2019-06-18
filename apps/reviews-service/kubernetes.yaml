@@ -9,7 +9,6 @@ metadata:
     app: reviews-service
     service: reviews-service
 spec:
-  type: NodePort
   ports:
   - port: 8080
     name: http
