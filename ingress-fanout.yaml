@@ -1,0 +1,98 @@
+# Ingress
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: fanout-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: hello-app
+          servicePort: 8080
+      - path: /v2/*
+        backend:
+          serviceName: hello-app-2
+          servicePort: 8080
+---
+
+# Service hello-app-2
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-app-2
+  namespace: default
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: hello-app-2
+  type: NodePort
+---
+
+# Deployment hello-app-2
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hello-app-2
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      run: hello-app-2
+  template:
+    metadata:
+      labels:
+        run: hello-app-2
+    spec:
+      containers:
+      - image: gcr.io/google-samples/hello-app:2.0
+        imagePullPolicy: IfNotPresent
+        name: hello-app-2
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+---
+
+# Service hello-app
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-app
+  namespace: default
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: hello-app
+  type: NodePort
+---
+
+# Deployment hello-app
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hello-app
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      run: hello-app
+  template:
+    metadata:
+      labels:
+        run: hello-app
+    spec:
+      containers:
+      - image: gcr.io/google-samples/hello-app:1.0
+        imagePullPolicy: IfNotPresent
+        name: hello-app
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+---
