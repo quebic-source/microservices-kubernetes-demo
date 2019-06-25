@@ -46,6 +46,9 @@
 ### products-service
 * kubectl apply -f apps/products-service/kubernetes.yaml
 
+## Create static ip
+* gcloud compute addresses create ms-demo-static-ip --global
+
 ## Create Ingress
 * kubectl apply -f ingress.yaml
 
